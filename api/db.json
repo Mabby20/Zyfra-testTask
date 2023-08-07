@@ -1,0 +1,202 @@
+{
+  "departments": [
+    {
+      "id": 1,
+      "name": "Отдел продаж",
+      "createdAt": "2020-05-01T12:00:00.000Z",
+      "description": "Отдел по продажам продукции компании",
+      "parentId": null
+    },
+    {
+      "id": 2,
+      "name": "Отдел маркетинга",
+      "createdAt": "2022-01-15T09:00:00.000Z",
+      "description": "Отдел по продвижению продукции и рекламных кампаний",
+      "parentId": null
+    },
+    {
+      "id": 3,
+      "name": "Отдел немаркетинга",
+      "createdAt": "2018-03-22T10:15:00.000Z",
+      "description": "Отдел немаркетинга",
+      "parentId": 1
+    },
+    {
+      "name": "Отдел чила",
+      "description": "отдел где отдыхают",
+      "parentId": null,
+      "createdAt": "2023-08-01T14:46:22.072Z",
+      "id": 15
+    },
+    {
+      "name": "Новый отдел",
+      "description": "описание про новый отдел",
+      "parentId": 2,
+      "createdAt": "2023-08-03T08:27:36.642Z",
+      "id": 16
+    },
+    {
+      "name": "Новый отдел в новом отделе",
+      "description": "Описание",
+      "parentId": 16,
+      "createdAt": "2023-08-03T21:13:52.333Z",
+      "id": 17
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "firstName": "Иван",
+      "lastName": "Иванов",
+      "middleName": "Иванович",
+      "birthDate": "Sat, 26 Nov 1983 00:00:00 GMT",
+      "gender": 0,
+      "position": "программист",
+      "hasDriverLicense": 0,
+      "departmentId": 3
+    },
+    {
+      "id": 5,
+      "firstName": "Олег",
+      "lastName": "Савельев",
+      "middleName": "Михайлович",
+      "birthDate": "Wed, 16 Aug 2023 19:42:51 GMT",
+      "gender": 1,
+      "position": "аналитик",
+      "hasDriverLicense": 1,
+      "departmentId": 2
+    },
+    {
+      "firstName": "Pavel",
+      "lastName": "Pavel",
+      "middleName": "Pavel",
+      "birthDate": "Tue, 20 Sep 1994 15:20:42 GMT",
+      "gender": 1,
+      "position": "Frontend",
+      "hasDriverLicense": 1,
+      "departmentId": 1,
+      "id": 6
+    },
+    {
+      "firstName": "Вадим",
+      "lastName": "Уткин",
+      "middleName": "Максимович",
+      "birthDate": "2023-08-03T20:44:26.872Z",
+      "gender": 1,
+      "position": "sales manager",
+      "hasDriverLicense": 1,
+      "departmentId": 1,
+      "id": 8
+    },
+    {
+      "firstName": "Василий",
+      "lastName": "Васильев",
+      "middleName": "Васильевич",
+      "birthDate": "Wed, 15 Aug 2012 07:27:49 GMT",
+      "gender": 1,
+      "position": "Аналитик данных",
+      "hasDriverLicense": 1,
+      "departmentId": 17,
+      "id": 9
+    },
+    {
+      "firstName": "asd",
+      "lastName": "asdf",
+      "middleName": "asdfsadf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:12 GMT",
+      "gender": 0,
+      "position": "asdfasdf",
+      "hasDriverLicense": 1,
+      "departmentId": 1,
+      "id": 10
+    },
+    {
+      "firstName": "asdfasdf",
+      "lastName": "asdf",
+      "middleName": "asdfasdf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:20 GMT",
+      "gender": 0,
+      "position": "asdfsdf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 11
+    },
+    {
+      "firstName": "asdfsadf",
+      "lastName": "asdfasdf",
+      "middleName": "asdfasdf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:25 GMT",
+      "gender": 1,
+      "position": "asdfasdf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 12
+    },
+    {
+      "firstName": "asdfsadf",
+      "lastName": "asdfasdf",
+      "middleName": "asdf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:37 GMT",
+      "gender": 1,
+      "position": "asdf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 13
+    },
+    {
+      "firstName": "asdfsadf",
+      "lastName": "asdf",
+      "middleName": "asdf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:50 GMT",
+      "gender": 1,
+      "position": "asdf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 14
+    },
+    {
+      "firstName": "asdfasdf",
+      "lastName": "asdfasdf",
+      "middleName": "asdf",
+      "birthDate": "Mon, 07 Aug 2023 08:31:56 GMT",
+      "gender": 0,
+      "position": "asdfsadf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 15
+    },
+    {
+      "firstName": "asdfasdf",
+      "lastName": "asdf",
+      "middleName": "asdfsdf",
+      "birthDate": "Mon, 07 Aug 2023 08:32:02 GMT",
+      "gender": 0,
+      "position": "asdfasdf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 16
+    },
+    {
+      "firstName": "asdfasdf",
+      "lastName": "asdfasdf",
+      "middleName": "asdfsadfasdf",
+      "birthDate": "Mon, 07 Aug 2023 08:32:09 GMT",
+      "gender": 0,
+      "position": "asdfsadf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 17
+    },
+    {
+      "firstName": "asdfasfd",
+      "lastName": "asdfasdf",
+      "middleName": "asdfasf",
+      "birthDate": "Mon, 07 Aug 2023 08:32:16 GMT",
+      "gender": 0,
+      "position": "asdfasf",
+      "hasDriverLicense": 0,
+      "departmentId": 1,
+      "id": 18
+    }
+  ]
+}
