@@ -1,3 +1,8 @@
+export enum EGender {
+  female = 0,
+  male = 1,
+}
+
 export interface IEmployeeDb {
   id: number;
   firstName: string;

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run dev\"",
-    "server": "json-server -w api/db.json -p 3001",
+    "server": "json-server -w mock-server/db.json -p 3001",
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
