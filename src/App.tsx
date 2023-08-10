@@ -1,19 +1,22 @@
-import React, {useState, FC} from 'react'
-import {Layout} from 'antd';
+import { useState, FC } from 'react';
+
+import { Layout } from 'antd';
 import Departments from './features/departments';
 import Employees from './features/employees';
-import {IDepartmentDb} from '@/types/department.types.ts'
+
+import { IDepartmentDb } from '@/types/department.types.ts';
 import './App.css';
 
-const {Sider, Content} = Layout;
+const { Sider, Content } = Layout;
 
 const App: FC = () => {
-  const [focusedDepartment, setFocusedDepartment] = useState<IDepartmentDb | null>(null);
-  console.log('focusedDepartment', focusedDepartment)
+  const [focusedDepartment, setFocusedDepartment] =
+    useState<IDepartmentDb | null>(null);
+    
   return (
     <Layout
       style={{
-        background: '#f5f5f5'
+        background: '#f5f5f5',
       }}
     >
       <Sider
@@ -39,11 +42,9 @@ const App: FC = () => {
           background: '#fff',
         }}
       >
-        <Employees
-          focusedDepartment={focusedDepartment}
-        />
+        <Employees focusedDepartment={focusedDepartment} />
       </Content>
     </Layout>
-  )
+  );
 };
 export default App;

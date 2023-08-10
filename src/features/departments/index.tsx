@@ -1,20 +1,21 @@
-import React, {useState, FC} from 'react';
-import {Button, Modal, Form, Input, Spin} from 'antd';
-import DepartmentTree from './components/DepartmentTree.tsx'
-import DepartmentToolbar from './components/DepartmentToolbar.tsx'
-import {useGetDepartmentsQuery} from "@/store";
-import {IDepartmentDb} from '@/types/department.types.ts'
-import departments from "@/features/departments/index.tsx";
+import { useState, FC } from 'react';
+import { useGetDepartmentsQuery } from '@/store';
 
+import { Spin } from 'antd';
+import DepartmentTree from './components/DepartmentTree.tsx';
+import DepartmentToolbar from './components/DepartmentToolbar.tsx';
 
-//нужно ли тут описывать пропсы?
-// чем должно являться departments? поидее это тот те данные которые приходят с бэка - поэтому нужен интерфес, приходящих данных с бэка
+import { IDepartmentDb } from '@/types/department.types.ts';
+
 interface DepartmentProps {
   focusedDepartment: IDepartmentDb | null;
   setFocusedDepartment: (department: IDepartmentDb | null) => void;
 }
-const Departments: FC<DepartmentProps> = ({focusedDepartment, setFocusedDepartment}) => {
-  const {data: departments, isLoading, isError}: {data: IDepartmentDb[], isLoading: boolean, isError: boolean} = useGetDepartmentsQuery();
+const Departments: FC<DepartmentProps> = ({
+  focusedDepartment,
+  setFocusedDepartment,
+}) => {
+  const { data: departments, isLoading } = useGetDepartmentsQuery();
   const [hasChildren, setHasChildren] = useState(true);
 
   return (
@@ -24,15 +25,16 @@ const Departments: FC<DepartmentProps> = ({focusedDepartment, setFocusedDepartme
         setFocusedDepartment={setFocusedDepartment}
         hasChildren={hasChildren}
       />
-      {isLoading && <Spin/>}
-      {!isLoading && !isError &&
-          <DepartmentTree
-              departments={departments}
-              setFocusedDepartment={setFocusedDepartment}
-              setHasChildren={setHasChildren}
-          />}
+      {isLoading && <Spin />}
+      {departments && (
+        <DepartmentTree
+          departments={departments}
+          setFocusedDepartment={setFocusedDepartment}
+          setHasChildren={setHasChildren}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
 export default Departments;

@@ -1,16 +1,12 @@
-import React, {FC} from "react";
-import {useDispatch, useSelector} from 'react-redux';
-import useCustomNotification from "../../hooks/useCustomNotification.tsx";
-import getModalComponent from "../../modals";
-import {PlusOutlined, CloseCircleOutlined} from "@ant-design/icons";
-import {Button, Popconfirm, Space} from 'antd';
-import {
-  actions as modalsActions,
-  selectors as modalsSelectors,
-  useDeleteDepartmentMutation
-} from '../../../store';
-import {IDepartmentDb} from "@/types/department.types.ts";
-import {IAppDispatch} from '@/store'
+import { FC, useState } from 'react';
+import useCustomNotification from '../../hooks/useCustomNotification.tsx';
+import { useDeleteDepartmentMutation } from '@/store';
+
+import DepartmentModal from '@/features/modals/DepartmentModal';
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Button, Popconfirm, Space } from 'antd';
+
+import { IDepartmentDb } from '@/types/department.types.ts';
 
 interface DepartmentToolbarProps {
   focusedDepartment: IDepartmentDb | null;
@@ -18,32 +14,35 @@ interface DepartmentToolbarProps {
   hasChildren: boolean;
 }
 
-const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFocusedDepartment, hasChildren}) => {
-  const dispatch = useDispatch<IAppDispatch>();
-  const {openNotification, contextHolder} = useCustomNotification();
+const DepartmentToolbar: FC<DepartmentToolbarProps> = ({
+  focusedDepartment,
+  setFocusedDepartment,
+  hasChildren,
+}) => {
+  const [isOpened, setIsOpened] = useState(false);
 
-  const typeModal = useSelector(modalsSelectors.selectTypeModal);
-  const type: string | null = typeModal.isEmployee ? null : typeModal.type;
+  const [typeModal, setTypeModal] = useState('');
+
+  const { openNotification, contextHolder } = useCustomNotification();
 
   const [deleteDepartment] = useDeleteDepartmentMutation();
+
+  const onClose = () => {
+    setIsOpened(false);
+    setTypeModal('');
+  };
+
   const handleAddClick = () => {
-    dispatch(modalsActions.open({
-      type: 'addingDepartment',
-      isEmployee: false,
-      targetId: focusedDepartment?.id || null,
-    }))
+    setIsOpened(true);
+    setTypeModal('addingDepartment');
   };
 
   const handleChangeClick = () => {
     if (!focusedDepartment) {
       return;
     }
-
-    dispatch(modalsActions.open({
-      type: 'changingDepartment',
-      isEmployee: false,
-      targetId: focusedDepartment.id
-    }))
+    setIsOpened(true);
+    setTypeModal('changingDepartment');
   };
 
   const handleDeleteClick = async () => {
@@ -51,10 +50,11 @@ const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFo
       return;
     }
 
-    const response = await deleteDepartment(focusedDepartment.id);
-    if (response.data) {
+    try {
+      await deleteDepartment(focusedDepartment.id);
       openNotification('success', 'Удаление прошло успешно');
-    } else {
+    } catch (error) {
+      console.log(error);
       openNotification('error', 'Ошибка удаления');
     }
     setFocusedDepartment(null);
@@ -63,14 +63,10 @@ const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFo
   return (
     <>
       {contextHolder}
-      <Space
-        size="middle"
-        style={{margin: '20px 0', minWidth: '100%'}}
-      >
+      <Space size="middle" style={{ margin: '20px 0', minWidth: '100%' }}>
         <Button
-          icon={<PlusOutlined/>}
+          icon={<PlusOutlined />}
           type="primary"
-          primary="true"
           ghost
           onClick={handleAddClick}
         >
@@ -78,7 +74,6 @@ const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFo
         </Button>
         <Button
           type="primary"
-          primary="true"
           ghost
           onClick={handleChangeClick}
           disabled={!focusedDepartment}
@@ -87,9 +82,9 @@ const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFo
         </Button>
         <Popconfirm title="Подтвердите удаление" onConfirm={handleDeleteClick}>
           <Button
-            icon={<CloseCircleOutlined/>}
+            icon={<CloseCircleOutlined />}
             type="primary"
-            danger="true"
+            danger
             ghost
             disabled={!focusedDepartment || hasChildren}
           >
@@ -97,9 +92,17 @@ const DepartmentToolbar: FC<DepartmentToolbarProps> = ({focusedDepartment, setFo
           </Button>
         </Popconfirm>
       </Space>
-      {getModalComponent(type, {openNotification})}
+      {isOpened && (
+        <DepartmentModal
+          typeModal={typeModal}
+          isOpened={isOpened}
+          onClose={onClose}
+          openNotification={openNotification}
+          focusedDepartment={focusedDepartment}
+        />
+      )}
     </>
-  )
+  );
 };
 
 export default DepartmentToolbar;

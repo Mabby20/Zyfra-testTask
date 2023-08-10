@@ -1,84 +1,87 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {IDepartmentDb} from "../types/department.types.ts";
-import {IEmployeeDb} from "../types/emloyee.types.ts";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+import { baseUrl, sliceApiPath } from '@/routes';
+
+import { IDepartmentDb } from '@/types/department.types.ts';
+import { IEmployeeDb } from '@/types/employee.types.ts';
 
 export const sliceApi = createApi({
   reducerPath: 'sliceApi',
   tagTypes: ['Departments', 'Employees'],
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:3001/',
+    baseUrl: baseUrl,
   }),
   endpoints: (build) => ({
-
+    
     //endpoints for departments
     getDepartments: build.query<IDepartmentDb[], void>({
-      query: () => '/departments',
-      providesTags: result => ['Departments'],
+      query: () => sliceApiPath.departmentsPath,
+      providesTags: ['Departments'],
     }),
     getDepartmentById: build.query<IDepartmentDb, number>({
-      query: (id) => `/departments/${id}`,
+      query: (id) => `${sliceApiPath.departmentsPath}/${id}`,
       providesTags: ['Departments'],
     }),
     addDepartment: build.mutation<IDepartmentDb, Omit<IDepartmentDb, 'id'>>({
       query: (department) => ({
-        url: '/departments',
+        url: sliceApiPath.departmentsPath,
         method: 'POST',
-        body: department
+        body: department,
       }),
       invalidatesTags: ['Departments'],
     }),
     updateDepartment: build.mutation<IDepartmentDb, Partial<IDepartmentDb>>({
-      query: ({id, ...patch}) => ({
-        url: `/departments/${id}`,
+      query: ({ id, ...patch }) => ({
+        url: `${sliceApiPath.departmentsPath}/${id}`,
         method: 'PATCH',
-        body: patch
+        body: patch,
       }),
       invalidatesTags: ['Departments'],
     }),
     deleteDepartment: build.mutation<{ success: boolean }, number>({
       query: (id) => ({
-        url: `/departments/${id}`,
-        method: 'DELETE'
+        url: `${sliceApiPath.departmentsPath}/${id}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['Departments'],
     }),
 
     //endpoints for employees
     getEmployees: build.query<IEmployeeDb[], void>({
-      query: () => '/employees',
-      providesTags: ['Employees']
+      query: () => sliceApiPath.EmployeesPath,
+      providesTags: ['Employees'],
     }),
 
     getEmployeeById: build.query<IEmployeeDb, number>({
-      query: (id) => `/employees/${id}`,
-      providesTags: ['Employees']
+      query: (id) => `${sliceApiPath.EmployeesPath}/${id}`,
+      providesTags: ['Employees'],
     }),
 
     addEmployee: build.mutation<IEmployeeDb, Omit<IEmployeeDb, 'id'>>({
       query: (employee) => ({
-        url: '/employees',
+        url: sliceApiPath.EmployeesPath,
         method: 'POST',
-        body: employee
+        body: employee,
       }),
       invalidatesTags: ['Employees'],
     }),
 
     updateEmployee: build.mutation<IEmployeeDb, Partial<IEmployeeDb>>({
-      query: ({id, ...patch}) => ({
-        url: `/employees/${id}`,
+      query: ({ id, ...patch }) => ({
+        url: `${sliceApiPath.EmployeesPath}/${id}`,
         method: 'PATCH',
-        body: patch
+        body: patch,
       }),
       invalidatesTags: ['Employees'],
     }),
 
     deleteEmployee: build.mutation<{ success: boolean }, number>({
       query: (id) => ({
-        url: `/employees/${id}`,
-        method: 'DELETE'
+        url: `${sliceApiPath.EmployeesPath}/${id}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['Employees'],
-    })
+    }),
   }),
 });
 export const {

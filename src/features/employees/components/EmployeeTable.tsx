@@ -1,30 +1,22 @@
-import React, {FC} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import moment from 'moment'
-import getModalComponent from "../../modals";
-import useCustomNotification from "../../hooks/useCustomNotification.tsx";
-import {
-  actions as modalsActions,
-  selectors as modalsSelectors,
-  useGetEmployeesQuery,
-  useDeleteEmployeeMutation
-} from "../../../store";
-import {Table, Space, Popconfirm} from 'antd';
-import {ColumnsType} from "antd/es/table";
-import {IEmployeeDb} from '@/types/emloyee.types.ts'
-import {IDepartmentDb} from "@/types/department.types.ts";
-import {IAppDispatch} from "@/store";
-import {EGender} from "./employeeTypes.ts";
+import { FC, useState } from 'react';
+import find from 'lodash/find';
+import * as dayjs from 'dayjs';
+import { useGetEmployeesQuery, useDeleteEmployeeMutation } from '@/store';
 
+import EmployeeModal from '@/features/modals/EmployeeModal.tsx';
+import { Table, Space, Popconfirm } from 'antd';
 
-interface EmployeeTableProps {
-  focusedDepartment: IDepartmentDb | null;
-}
+import { ColumnsType } from 'antd/es/table';
+import { IEmployeeDb, EGender } from '@/types/employee.types.ts';
+import { IDepartmentDb } from '@/types/department.types.ts';
+import { NotificationType } from '@/features/hooks/useCustomNotification';
 
 interface IEmployeeTable {
   key: number;
-  fullName: string;
-  birthDate: Date;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  birthDate: string;
   gender: string;
   position: string;
   hasDriverLicense: string;
@@ -48,44 +40,66 @@ const generateTableData = (rawData: IEmployeeDb[]): IEmployeeTable[] => {
       firstName: item.firstName,
       lastName: item.lastName,
       middleName: item.middleName,
-      birthDate: moment(item.birthDate).format('DD.MM.YYYY'),
+      birthDate: dayjs(item.birthDate).format('YYYY.MM.DD'),
       gender: getGender(item.gender),
       position: item.position,
       hasDriverLicense: item.hasDriverLicense === 1 ? 'есть' : 'нет',
-    }
+    };
   }) as IEmployeeTable[];
 };
 
-const EmployeeTable: FC<EmployeeTableProps> = ({focusedDepartment}) => {
-  const dispatch = useDispatch<IAppDispatch>();
-  const {openNotification, contextHolder} = useCustomNotification();
+interface EmployeeTableProps {
+  focusedDepartment: IDepartmentDb | null;
+  openNotification: (type: NotificationType, description: string) => void;
+}
 
-  const {data: employees, isLoading}: { data: IEmployeeDb[], isLoading: boolean } = useGetEmployeesQuery();
+const EmployeeTable: FC<EmployeeTableProps> = ({
+  focusedDepartment,
+  openNotification,
+}) => {
+  const [isOpened, setIsOpened] = useState(false);
+
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
+    null
+  );
+
+  const { data: employees } = useGetEmployeesQuery();
 
   const [deleteEmployee] = useDeleteEmployeeMutation();
 
-  const currentEmployees: IEmployeeDb[] | null = isLoading ? null : employees.filter((employee) => employee.departmentId === focusedDepartment?.id);
+  const currentEmployees: IEmployeeDb[] | null = !employees
+    ? null
+    : employees.filter(
+        (employee) => employee.departmentId === focusedDepartment?.id
+      );
 
-  const tableData: IEmployeeTable[] | undefined = currentEmployees ? generateTableData(currentEmployees) : undefined;
+  const editableEmployee =
+    currentEmployees && selectedEmployeeId
+      ? find(currentEmployees, ['id', selectedEmployeeId])
+      : null;
 
-  const modalInfo = useSelector(modalsSelectors.selectTypeModal);
+  const tableData: IEmployeeTable[] | undefined = currentEmployees
+    ? generateTableData(currentEmployees)
+    : undefined;
 
-  const typeModal = modalInfo.isEmployee ? modalInfo.type : null;
   const handleDeleteClick = async (key: number) => {
-    const response = await deleteEmployee(key);
-    if (response.data) {
+    try {
+      await deleteEmployee(key).unwrap();
       openNotification('success', 'Удаление прошло успешно');
-    } else {
-      openNotification('error', 'Что-то сломалось');
+    } catch (error) {
+      console.error('error', error);
+      openNotification('error', 'Удаление не удалось');
     }
   };
 
   const handleChangeClick = (key: number) => {
-    dispatch(modalsActions.open({
-      type: 'changingEmployee',
-      isEmployee: true,
-      targetId: key,
-    }))
+    setSelectedEmployeeId(key);
+    setIsOpened(true);
+  };
+
+  const onClose = () => {
+    setSelectedEmployeeId(null);
+    setIsOpened(false);
   };
 
   const columns: ColumnsType<IEmployeeTable> = [
@@ -127,32 +141,39 @@ const EmployeeTable: FC<EmployeeTableProps> = ({focusedDepartment}) => {
     {
       title: '',
       key: 'action',
-      render: (_: any, record: IEmployeeTable) => {
-
+      render: (_, record: IEmployeeTable) => {
         return (
           <Space size="middle">
-            <Popconfirm title="Подтвердите удаление" onConfirm={() => handleDeleteClick(record.key)}>
+            <Popconfirm
+              title="Подтвердите удаление"
+              onConfirm={() => handleDeleteClick(record.key)}
+            >
               <a>Удалить</a>
             </Popconfirm>
             <a onClick={() => handleChangeClick(record.key)}>Изменить</a>
           </Space>
-        )
-      }
-    }
+        );
+      },
+    },
   ];
 
   return (
     <>
-      {contextHolder}
       <Table
         columns={columns}
         dataSource={tableData}
-        pagination={{pageSize: 10}}
+        pagination={{ pageSize: 10 }}
       />
-      {getModalComponent(typeModal, {openNotification})}
+      {isOpened && (
+        <EmployeeModal
+          isOpened={isOpened}
+          onClose={onClose}
+          openNotification={openNotification}
+          editableEmployee={editableEmployee}
+        />
+      )}
     </>
-  )
+  );
 };
 
 export default EmployeeTable;
-
